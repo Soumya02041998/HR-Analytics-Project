@@ -1,0 +1,135 @@
+Create Table employee_attrition (
+	Emp_ID int,	
+ 	satisfaction_level decimal(5,2),
+	last_evaluation	decimal (5,2),
+	number_project int,	
+	average_montly_hours int,	
+	time_spend_company	int, 
+	Work_accident	int,
+	promotion_last_5years	int, 
+	dept varchar,	
+	salary varchar
+)
+
+select * from Employee_Attrition;
+
+copy Employee_Attrition from 'C:\Program Files\PostgreSQL\16\data\DATA_COPY\Employee Attrition\Employee_Attrition.csv' delimiter ',' csv header;
+
+--- 3 Department with highghest satisfaction scores
+
+select round(avg(satisfaction_level), 2) as avg_emp_satis, dept from Employee_Attrition 
+group by dept
+order by  avg_emp_satis desc
+Limit 4;
+
+---0.62	"management"
+---0.62	"support"
+---0.62	"product_mng"
+
+--- 3 Department with lowest satisfaction scores
+select round(avg(satisfaction_level), 2) as avg_emp_satis, dept from Employee_Attrition 
+group by dept
+order by  avg_emp_satis 
+limit 3;
+
+---0.58	"accounting"
+---0.60	"hr"
+---0.61	"technical"
+
+---relation between salary amd avg satisfaction
+
+select round(avg(satisfaction_level), 2) as avg_emp_satis, salary from Employee_Attrition 
+group by salary
+order by  avg_emp_satis 
+limit 3;
+
+---0.60	"low"
+---0.62	"medium"
+---0.64	"high"
+
+--How did the top 2 and bottom 2 dept perform in the folowing areas
+
+--last evaluation
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round (avg(last_evaluation), 2) as avg_last_evaluation
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+	
+---"bot_dep"	0.71
+---"top_dep"	0.72
+
+--new project
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round(avg(number_project), 2) as avg_last_project
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+	
+---"bot_dep"	3.74
+---"top_dep"	3.76
+
+--avg monthly hours
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round(avg(average_montly_hours), 2) as avg_last_project
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+
+---"bot_dep"	199.95
+---"top_dep"	201.05
+
+--work accident
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round(avg(work_accident), 2) as avg_work_accident
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+
+---"bot_dep"	0.12
+---"top_dep"	0.14
+
+--time at company
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round(avg(time_spend_company), 2) as avg_time_spend
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+	
+---"bot_dep"	3.44
+---"top_dep"	3.51
+
+--last 5 year promotion
+select 
+	Case 
+	when dept in ('marketing', 'IT') then 'top_dep' 
+	when dept in ('accounting', 'hr') then 'bot_dep'
+	end as top_bot,
+	round(avg(promotion_last_5years), 2) as avg_promotion_last_5years
+	from Employee_Attrition
+	where dept in ('marketing', 'IT', 'accounting', 'hr')
+	group by top_bot;
+	
+---"bot_dep"	0.02
+---"top_dep"	0.02
+	
